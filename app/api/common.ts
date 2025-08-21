@@ -101,7 +101,7 @@ export async function requestOpenai(req: NextRequest) {
       "Nonce": nonce,
       "Sign": sign,
       "Version": "1.7.4",
-      [authHeaderName]: authValue,
+      // [authHeaderName]: authValue,
       "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJMb2dpblR5cGUiOjIsIkFjY291bnRUeXBlIjozLCJJbnZpdGVDb2RlIjoicGs0QjVmc04iLCJNdWxEZXZpY2VMb2dpbiI6MSwiSW52aXRlQ29kZUlEIjo4MDM4LCJVc2VySUQiOjksIlVzZXJFbXBsb3llZUlEIjowLCJVc2VyRW1wbG95ZWVHcm91cElEIjowLCJJbnZpdGVDb2RlQXJyIjpudWxsLCJJbnZpdGVDb2RlSURBcnIiOm51bGwsImV4cCI6MTc1Njk3NTEyNywibmJmIjoxNzU0MzgzMTI3LCJpYXQiOjE3NTQzODMxMjd9.0hsERbNNDojUAVLA9tmCRwN8GWgXUyYubd5rAYYxsVw",
       ...(serverConfig.openaiOrgId && {
         "OpenAI-Organization": serverConfig.openaiOrgId,

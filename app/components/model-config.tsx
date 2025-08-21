@@ -23,32 +23,6 @@ export function ModelConfigList(props: {
 
   return (
     <>
-      <ListItem title={Locale.Settings.Model}>
-        <Select
-          aria-label={Locale.Settings.Model}
-          value={value}
-          align="left"
-          onChange={(e) => {
-            const [model, providerName] = getModelProvider(
-              e.currentTarget.value,
-            );
-            props.updateConfig((config) => {
-              config.model = ModalConfigValidator.model(model);
-              config.providerName = providerName as ServiceProvider;
-            });
-          }}
-        >
-          {Object.keys(groupModels).map((providerName, index) => (
-            <optgroup label={providerName} key={index}>
-              {groupModels[providerName].map((v, i) => (
-                <option value={`${v.name}@${v.provider?.providerName}`} key={i}>
-                  {v.displayName}
-                </option>
-              ))}
-            </optgroup>
-          ))}
-        </Select>
-      </ListItem>
       <ListItem
         title={Locale.Settings.Temperature.Title}
         subTitle={Locale.Settings.Temperature.SubTitle}
@@ -240,33 +214,6 @@ export function ModelConfigList(props: {
             )
           }
         ></input>
-      </ListItem>
-      <ListItem
-        title={Locale.Settings.CompressModel.Title}
-        subTitle={Locale.Settings.CompressModel.SubTitle}
-      >
-        <Select
-          className={styles["select-compress-model"]}
-          aria-label={Locale.Settings.CompressModel.Title}
-          value={compressModelValue}
-          onChange={(e) => {
-            const [model, providerName] = getModelProvider(
-              e.currentTarget.value,
-            );
-            props.updateConfig((config) => {
-              config.compressModel = ModalConfigValidator.model(model);
-              config.compressProviderName = providerName as ServiceProvider;
-            });
-          }}
-        >
-          {allModels
-            .filter((v) => v.available)
-            .map((v, i) => (
-              <option value={`${v.name}@${v.provider?.providerName}`} key={i}>
-                {v.displayName}({v.provider?.providerName})
-              </option>
-            ))}
-        </Select>
       </ListItem>
     </>
   );
