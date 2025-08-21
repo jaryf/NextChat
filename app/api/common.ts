@@ -3,6 +3,8 @@ import { getServerSideConfig } from "../config/server";
 import { OPENAI_BASE_URL, ServiceProvider } from "../constant";
 import { cloudflareAIGatewayUrl } from "../utils/cloudflare";
 import { getModelProvider, isModelNotavailableInServer } from "../utils/model";
+import md5 from "spark-md5";
+
 
 const serverConfig = getServerSideConfig();
 
@@ -90,11 +92,17 @@ export async function requestOpenai(req: NextRequest) {
 
   const fetchUrl = cloudflareAIGatewayUrl(`${baseUrl}/${path}`);
   console.log("fetchUrl", fetchUrl);
+  const nonce = (Math.random() * 10000000).toString()
+  const sign = md5.hash(`${nonce}NsRGmBGR3AWCvBwq`).trim()
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
       "Cache-Control": "no-store",
+      "Nonce": nonce,
+      "Sign": sign,
+      "Version": "1.7.4",
       [authHeaderName]: authValue,
+      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJMb2dpblR5cGUiOjIsIkFjY291bnRUeXBlIjozLCJJbnZpdGVDb2RlIjoicGs0QjVmc04iLCJNdWxEZXZpY2VMb2dpbiI6MSwiSW52aXRlQ29kZUlEIjo4MDM4LCJVc2VySUQiOjksIlVzZXJFbXBsb3llZUlEIjowLCJVc2VyRW1wbG95ZWVHcm91cElEIjowLCJJbnZpdGVDb2RlQXJyIjpudWxsLCJJbnZpdGVDb2RlSURBcnIiOm51bGwsImV4cCI6MTc1Njk3NTEyNywibmJmIjoxNzU0MzgzMTI3LCJpYXQiOjE3NTQzODMxMjd9.0hsERbNNDojUAVLA9tmCRwN8GWgXUyYubd5rAYYxsVw",
       ...(serverConfig.openaiOrgId && {
         "OpenAI-Organization": serverConfig.openaiOrgId,
       }),
