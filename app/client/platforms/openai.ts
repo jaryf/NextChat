@@ -44,6 +44,7 @@ import {
   getTimeoutMSByModel,
 } from "@/app/utils";
 import { fetch } from "@/app/utils/stream";
+import { aesEncrypt } from "@/app/client/utils/textEncrypt";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -238,12 +239,11 @@ export class ChatGPTApi implements LLMApi {
         // max_tokens: Math.max(modelConfig.max_tokens, 1024),
         // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
       };
-
       if (isGpt5) {
-  	// Remove max_tokens if present
-  	delete requestPayload.max_tokens;
-  	// Add max_completion_tokens (or max_completion_tokens if that's what you meant)
-  	requestPayload["max_completion_tokens"] = modelConfig.max_tokens;
+        // Remove max_tokens if present
+        delete requestPayload.max_tokens;
+        // Add max_completion_tokens (or max_completion_tokens if that's what you meant)
+        requestPayload["max_completion_tokens"] = modelConfig.max_tokens;
 
       } else if (isO1OrO3) {
         // by default the o1/o3 models will not attempt to produce output that includes markdown formatting
@@ -311,9 +311,11 @@ export class ChatGPTApi implements LLMApi {
             useChatStore.getState().currentSession().mask?.plugin || [],
           );
         // console.log("getAsTools", tools, funcs);
+
+        const aesEncryptPayload = aesEncrypt(requestPayload)
         streamWithThink(
           chatPath,
-          requestPayload,
+          {text: aesEncryptPayload},
           getHeaders(),
           tools as any,
           funcs,
@@ -415,6 +417,8 @@ export class ChatGPTApi implements LLMApi {
           () => controller.abort(),
           getTimeoutMSByModel(options.config.model),
         );
+
+        console.log('==========chatPayload', chatPayload)
 
         const res = await fetch(chatPath, chatPayload);
         clearTimeout(requestTimeoutId);

@@ -125,6 +125,7 @@ import { getModelProvider } from "../utils/model";
 import { RealtimeChat } from "@/app/components/realtime-chat";
 import clsx from "clsx";
 import { getAvailableClientsCount, isMcpEnabled } from "../mcp/actions";
+import IframeMessengerChild from './libs/IframeMessengerChild'
 
 const localStorage = safeLocalStorage();
 
@@ -1090,7 +1091,35 @@ function _Chat() {
     }
   };
 
-  const doSubmit = (userInput: string) => {
+  let parentMessenger: any = null
+  async function getChatAICount() {
+    if (parentMessenger) {
+      try {
+        await parentMessenger?.callParent("getChatAICount")
+      }catch (error) {
+        return;
+      }
+    }
+  }
+  const doSubmit = async (userInput: string) => {
+    console.log(window.parent);
+    console.log(window.top);
+    if(!window.parent) {
+      return;
+    }
+    if(!parentMessenger) {
+      parentMessenger = new IframeMessengerChild("*");
+    }
+
+    try {
+      const result = await parentMessenger.callParent("getRemainingCount");
+      if(result.error) return;
+      if(!result.success) return;
+      console.log(result)
+    }catch(e){
+      return;
+    }
+
     if (userInput.trim() === "" && isEmpty(attachImages)) return;
     const matchCommand = chatCommands.match(userInput);
     if (matchCommand.matched) {
@@ -1101,7 +1130,7 @@ function _Chat() {
     }
     setIsLoading(true);
     chatStore
-      .onUserInput(userInput, attachImages)
+      .onUserInput(userInput, attachImages, false, getChatAICount)
       .then(() => setIsLoading(false));
     setAttachImages([]);
     chatStore.setLastInput(userInput);

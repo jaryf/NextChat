@@ -4,6 +4,8 @@ import { OPENAI_BASE_URL, ServiceProvider } from "../constant";
 import { cloudflareAIGatewayUrl } from "../utils/cloudflare";
 import { getModelProvider, isModelNotavailableInServer } from "../utils/model";
 import md5 from "spark-md5";
+import {cdnMd5, calculateSHA256} from './utils/cdnMd5'
+import {aesEncrypt} from '../client/utils/textEncrypt'
 
 
 const serverConfig = getServerSideConfig();
@@ -91,9 +93,30 @@ export async function requestOpenai(req: NextRequest) {
   }
 
   const fetchUrl = cloudflareAIGatewayUrl(`${baseUrl}/${path}`);
-  console.log("fetchUrl", fetchUrl);
+
+  const token = req.headers
+      .get("Token")
+      ?.trim()
+      .replaceAll("Bearer ", "")
+      .trim() ?? "";
+
+  async function getCdnHeader() {
+    const timestamp = Math.floor(Date.now() / 1000);
+    const key= cdnMd5(process.env.AI302_CDN_API_KEY + '&&&' + timestamp + 'haiwang');
+    // 组合待签名字符串：apiKey + timestamp
+    const message =  key + timestamp
+    // 生成签名
+    const sign = await calculateSHA256(message);
+    return {
+      'X-Custom-Sign': sign,
+      'X-API-Key': key,
+      'X-Timestamp': timestamp,
+    }
+  }
+  const cdnHeader = await getCdnHeader()
   const nonce = (Math.random() * 10000000).toString()
   const sign = md5.hash(`${nonce}NsRGmBGR3AWCvBwq`).trim()
+
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
@@ -102,10 +125,12 @@ export async function requestOpenai(req: NextRequest) {
       "Sign": sign,
       "Version": "1.7.4",
       // [authHeaderName]: authValue,
-      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJMb2dpblR5cGUiOjIsIkFjY291bnRUeXBlIjozLCJJbnZpdGVDb2RlIjoicGs0QjVmc04iLCJNdWxEZXZpY2VMb2dpbiI6MSwiSW52aXRlQ29kZUlEIjo4MDM4LCJVc2VySUQiOjksIlVzZXJFbXBsb3llZUlEIjowLCJVc2VyRW1wbG95ZWVHcm91cElEIjowLCJJbnZpdGVDb2RlQXJyIjpudWxsLCJJbnZpdGVDb2RlSURBcnIiOm51bGwsImV4cCI6MTc1Njk3NTEyNywibmJmIjoxNzU0MzgzMTI3LCJpYXQiOjE3NTQzODMxMjd9.0hsERbNNDojUAVLA9tmCRwN8GWgXUyYubd5rAYYxsVw",
+      // "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJMb2dpblR5cGUiOjIsIkFjY291bnRUeXBlIjozLCJJbnZpdGVDb2RlIjoicGs0QjVmc04iLCJNdWxEZXZpY2VMb2dpbiI6MSwiSW52aXRlQ29kZUlEIjo4MDM4LCJVc2VySUQiOjksIlVzZXJFbXBsb3llZUlEIjowLCJVc2VyRW1wbG95ZWVHcm91cElEIjowLCJJbnZpdGVDb2RlQXJyIjpudWxsLCJJbnZpdGVDb2RlSURBcnIiOm51bGwsImV4cCI6MTc1Njk3NTEyNywibmJmIjoxNzU0MzgzMTI3LCJpYXQiOjE3NTQzODMxMjd9.0hsERbNNDojUAVLA9tmCRwN8GWgXUyYubd5rAYYxsVw",
+      "Authorization": token,
       ...(serverConfig.openaiOrgId && {
         "OpenAI-Organization": serverConfig.openaiOrgId,
       }),
+      ...cdnHeader
     },
     method: req.method,
     body: req.body,

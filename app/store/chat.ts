@@ -408,6 +408,7 @@ export const useChatStore = createPersistStore(
         content: string,
         attachImages?: string[],
         isMcpResponse?: boolean,
+        onFinishSuccess?: () => void,
       ) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
@@ -478,6 +479,7 @@ export const useChatStore = createPersistStore(
               get().onNewMessage(botMessage, session);
             }
             ChatControllerPool.remove(session.id, botMessage.id);
+            onFinishSuccess?.()
           },
           onBeforeTool(tool: ChatMessageTool) {
             (botMessage.tools = botMessage?.tools || []).push(tool);

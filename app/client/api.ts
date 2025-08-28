@@ -241,6 +241,23 @@ export function validString(x: string): boolean {
   return x?.length > 0;
 }
 
+export function getHashParams(hash = window.location.hash) {
+  const queryString = hash.includes("?") ? hash.split("?")[1] : "";
+
+  const result: any = {};
+  if (queryString) {
+    const params = new URLSearchParams(queryString);
+    params.forEach((value, key) => {
+      // 如果是 token，去掉 Bearer 前缀
+      if (key === "token") {
+        value = decodeURIComponent(value).replace(/^Bearer\s+/i, "");
+      }
+      result[key] = value;
+    });
+  }
+  return result;
+}
+
 export function getHeaders(ignoreHeaders: boolean = false) {
   const accessStore = useAccessStore.getState();
   const chatStore = useChatStore.getState();
@@ -360,6 +377,12 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     headers["Authorization"] = getBearerToken(
       ACCESS_CODE_PREFIX + accessStore.accessCode,
     );
+  }
+
+  const params = getHashParams()
+  console.log('params', params)
+  if(params.token) {
+    headers["Token"] = params.token
   }
 
   return headers;
