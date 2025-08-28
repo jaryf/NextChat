@@ -418,8 +418,6 @@ export class ChatGPTApi implements LLMApi {
           getTimeoutMSByModel(options.config.model),
         );
 
-        console.log('==========chatPayload', chatPayload)
-
         const res = await fetch(chatPath, chatPayload);
         clearTimeout(requestTimeoutId);
 
