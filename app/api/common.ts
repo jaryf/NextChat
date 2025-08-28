@@ -5,7 +5,6 @@ import { cloudflareAIGatewayUrl } from "../utils/cloudflare";
 import { getModelProvider, isModelNotavailableInServer } from "../utils/model";
 import md5 from "spark-md5";
 import {cdnMd5, calculateSHA256} from './utils/cdnMd5'
-import {aesEncrypt} from '../client/utils/textEncrypt'
 
 
 const serverConfig = getServerSideConfig();
@@ -94,12 +93,6 @@ export async function requestOpenai(req: NextRequest) {
 
   const fetchUrl = cloudflareAIGatewayUrl(`${baseUrl}/${path}`);
 
-  const token = req.headers
-      .get("Token")
-      ?.trim()
-      .replaceAll("Bearer ", "")
-      .trim() ?? "";
-
   async function getCdnHeader() {
     const timestamp = Math.floor(Date.now() / 1000);
     const key= cdnMd5(process.env.AI302_CDN_API_KEY + '&&&' + timestamp + 'haiwang');
@@ -116,14 +109,23 @@ export async function requestOpenai(req: NextRequest) {
   const cdnHeader = await getCdnHeader()
   const nonce = (Math.random() * 10000000).toString()
   const sign = md5.hash(`${nonce}NsRGmBGR3AWCvBwq`).trim()
-
-  const fetchOptions: RequestInit = {
+  const token = req.headers
+    .get("Token")
+    ?.trim()
+    .replaceAll("Bearer ", "")
+    .trim() ?? "";
+  const deviceID = req.headers.get("Device-ID")
+  const deviceSystem = req.headers.get("Device-System")
+  const version = req.headers.get("Version")
+  const fetchOptions: any = {
     headers: {
       "Content-Type": "application/json",
       "Cache-Control": "no-store",
       "Nonce": nonce,
       "Sign": sign,
-      "Version": "1.7.4",
+      "Device-ID": deviceID,
+      "Device-System": deviceSystem,
+      "Version": version,
       // [authHeaderName]: authValue,
       // "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJMb2dpblR5cGUiOjIsIkFjY291bnRUeXBlIjozLCJJbnZpdGVDb2RlIjoicGs0QjVmc04iLCJNdWxEZXZpY2VMb2dpbiI6MSwiSW52aXRlQ29kZUlEIjo4MDM4LCJVc2VySUQiOjksIlVzZXJFbXBsb3llZUlEIjowLCJVc2VyRW1wbG95ZWVHcm91cElEIjowLCJJbnZpdGVDb2RlQXJyIjpudWxsLCJJbnZpdGVDb2RlSURBcnIiOm51bGwsImV4cCI6MTc1Njk3NTEyNywibmJmIjoxNzU0MzgzMTI3LCJpYXQiOjE3NTQzODMxMjd9.0hsERbNNDojUAVLA9tmCRwN8GWgXUyYubd5rAYYxsVw",
       "Authorization": token,

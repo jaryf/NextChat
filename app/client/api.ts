@@ -380,9 +380,17 @@ export function getHeaders(ignoreHeaders: boolean = false) {
   }
 
   const params = getHashParams()
-  console.log('params', params)
   if(params.token) {
     headers["Token"] = params.token
+  }
+  if(params.deviceID) {
+    headers["Device-ID"] = params.deviceID
+  }
+  if(params.deviceSystem) {
+    headers["Device-System"] = params.deviceSystem
+  }
+  if(params.version) {
+    headers["Version"] = params.version
   }
 
   return headers;

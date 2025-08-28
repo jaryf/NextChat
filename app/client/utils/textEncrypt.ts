@@ -5,7 +5,7 @@ const key = CryptoJS.enc.Utf8.parse("LrbLutiqz284z1d2");
 const iv = CryptoJS.enc.Utf8.parse("zNdkwnkFrXvYVcCb");
 
 // 判断是否为普通对象
-function isPlainObject(value) {
+function isPlainObject(value: any): boolean {
     return (
         typeof value === 'object' &&
         value !== null &&
@@ -14,7 +14,7 @@ function isPlainObject(value) {
 }
 
 // 加密函数
-export function aesEncrypt(plainText) {
+export function aesEncrypt(plainText: any) {
     if (isPlainObject(plainText)) {
         plainText = JSON.stringify(plainText);
     }
@@ -27,7 +27,7 @@ export function aesEncrypt(plainText) {
 }
 
 // 解密函数
-export function aesDecrypt(cipherText) {
+export function aesDecrypt(cipherText: any) {
     const decrypted = CryptoJS.AES.decrypt(cipherText, key, {
         iv: iv,
         mode: CryptoJS.mode.CBC,
