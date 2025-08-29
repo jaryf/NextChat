@@ -2105,11 +2105,15 @@ function _Chat() {
                   onPaste={handlePaste}
                   rows={inputRows}
                   autoFocus={autoFocus}
+                  maxLength={1000}
                   style={{
                     fontSize: config.fontSize,
                     fontFamily: config.fontFamily,
                   }}
                 />
+                <p className={styles["chat-input-panel-inner-text"]}>
+                  {userInput.length}/1000
+                </p>
                 {attachImages.length != 0 && (
                   <div className={styles["attach-images"]}>
                     {attachImages.map((image, index) => {

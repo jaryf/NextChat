@@ -21,6 +21,20 @@ import BotIconGrok from "../icons/llm-icons/grok.svg";
 import BotIconHunyuan from "../icons/llm-icons/hunyuan.svg";
 import BotIconDoubao from "../icons/llm-icons/doubao.svg";
 import BotIconChatglm from "../icons/llm-icons/chatglm.svg";
+import CeoLogo from "../icons/ceo_logo.png";
+import NextImage from "next/image";
+
+function CeoLogoIcon(props: { width?: number; height?: number; className?: string }) {
+  return (
+    <NextImage
+      src={CeoLogo}
+      alt="logo"
+      width={props.width ?? 30}
+      height={props.height ?? 30}
+      className={props.className}
+    />
+  );
+}
 
 export function getEmojiUrl(unified: string, style: EmojiStyle) {
   // Whoever owns this Content Delivery Network (CDN), I am using your CDN to serve emojis
@@ -51,6 +65,8 @@ export function Avatar(props: { model?: ModelType; avatar?: string }) {
   if (props.model) {
     const modelName = props.model.toLowerCase();
 
+    console.log(modelName)
+
     if (
       modelName.startsWith("gpt") ||
       modelName.startsWith("chatgpt") ||
@@ -59,7 +75,8 @@ export function Avatar(props: { model?: ModelType; avatar?: string }) {
       modelName.startsWith("o1") ||
       modelName.startsWith("o3")
     ) {
-      LlmIcon = BotIconOpenAI;
+      // LlmIcon = BotIconOpenAI;
+      LlmIcon = CeoLogoIcon
     } else if (modelName.startsWith("gemini")) {
       LlmIcon = BotIconGemini;
     } else if (modelName.startsWith("gemma")) {
