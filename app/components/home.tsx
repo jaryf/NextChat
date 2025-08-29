@@ -31,7 +31,7 @@ import { useAccessStore } from "../store";
 import clsx from "clsx";
 import { initializeMcpSystem, isMcpEnabled } from "../mcp/actions";
 
-function getHashParams(hash = window.location.hash) {
+function getHashParams(hash: any) {
   const queryString = hash.includes("?") ? hash.split("?")[1] : "";
 
   const result: any = {};
@@ -47,9 +47,6 @@ function getHashParams(hash = window.location.hash) {
   }
   return result;
 }
-
-const params = getHashParams()
-localStorage.setItem('hash-params', JSON.stringify(params))
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -192,6 +189,15 @@ function Screen() {
 
   useEffect(() => {
     loadAsyncGoogleFont();
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = getHashParams(window.location.hash)
+      if(params.token) {
+        localStorage.setItem('hash-params', JSON.stringify(params))
+      }
+    }
   }, []);
 
   if (isArtifact) {
