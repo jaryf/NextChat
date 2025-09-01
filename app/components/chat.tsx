@@ -1093,6 +1093,7 @@ function _Chat() {
 
   let parentMessenger: any = null
   async function getChatAICount() {
+    scrollToBottom()
     if (parentMessenger) {
       try {
         await parentMessenger?.callParent("getChatAICount")
@@ -1111,14 +1112,14 @@ function _Chat() {
       parentMessenger = new IframeMessengerChild("*");
     }
 
-    try {
-      const result = await parentMessenger.callParent("getRemainingCount");
-      if(result.error) return;
-      if(!result.success) return;
-      console.log(result)
-    }catch(e){
-      return;
-    }
+    // try {
+    //   const result = await parentMessenger.callParent("getRemainingCount");
+    //   if(result.error) return;
+    //   if(!result.success) return;
+    //   console.log(result)
+    // }catch(e){
+    //   return;
+    // }
 
     if (userInput.trim() === "" && isEmpty(attachImages)) return;
     const matchCommand = chatCommands.match(userInput);
