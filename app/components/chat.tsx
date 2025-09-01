@@ -108,7 +108,7 @@ import {
   ServiceProvider,
   UNFINISHED_INPUT,
 } from "../constant";
-import { Avatar } from "./emoji";
+import { Avatar, CeoLogoIcon } from "./emoji";
 import { ContextPrompts, MaskAvatar, MaskConfig } from "./mask";
 import { useMaskStore } from "../store/mask";
 import { ChatCommandPrefix, useChatCommand, useCommand } from "../command";
@@ -1866,7 +1866,8 @@ function _Chat() {
                                 ></IconButton>
                               </div>
                               {isUser ? (
-                                <Avatar avatar={config.avatar} />
+                                // <Avatar avatar={config.avatar} />
+                                <CeoLogoIcon />
                               ) : (
                                 <>
                                   {["system"].includes(message.role) ? (

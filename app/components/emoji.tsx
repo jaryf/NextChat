@@ -24,7 +24,7 @@ import BotIconChatglm from "../icons/llm-icons/chatglm.svg";
 import CeoLogo from "../icons/ceo_logo.png";
 import NextImage from "next/image";
 
-function CeoLogoIcon(props: { width?: number; height?: number; className?: string }) {
+export function CeoLogoIcon(props: { width?: number; height?: number; className?: string }) {
   return (
     <NextImage
       src={CeoLogo}
@@ -75,8 +75,7 @@ export function Avatar(props: { model?: ModelType; avatar?: string }) {
       modelName.startsWith("o1") ||
       modelName.startsWith("o3")
     ) {
-      // LlmIcon = BotIconOpenAI;
-      LlmIcon = CeoLogoIcon
+      LlmIcon = BotIconOpenAI;
     } else if (modelName.startsWith("gemini")) {
       LlmIcon = BotIconGemini;
     } else if (modelName.startsWith("gemma")) {
