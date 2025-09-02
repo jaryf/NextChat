@@ -1113,14 +1113,11 @@ function _Chat() {
       parentMessenger = new IframeMessengerChild("*");
     }
 
-    // try {
-    //   const result = await parentMessenger.callParent("getRemainingCount");
-    //   if(result.error) return;
-    //   if(!result.success) return;
-    //   console.log(result)
-    // }catch(e){
-    //   return;
-    // }
+    try {
+      await parentMessenger.callParent("getRemainingCount");
+    }catch(e){
+      return;
+    }
 
     if (userInput.trim() === "" && isEmpty(attachImages)) return;
     const matchCommand = chatCommands.match(userInput);

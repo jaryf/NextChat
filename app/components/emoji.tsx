@@ -65,8 +65,6 @@ export function Avatar(props: { model?: ModelType; avatar?: string }) {
   if (props.model) {
     const modelName = props.model.toLowerCase();
 
-    console.log(modelName)
-
     if (
       modelName.startsWith("gpt") ||
       modelName.startsWith("chatgpt") ||
