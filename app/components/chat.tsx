@@ -651,6 +651,7 @@ export function ChatActions(props: {
           icon={<PromptIcon />}
         />
 
+        {/*所有面具*/}
         <ChatAction
           onClick={() => {
             navigate(Path.Masks);
@@ -1887,7 +1888,8 @@ function _Chat() {
                             </div>
                             {!isUser && (
                               <div className={styles["chat-model-name"]}>
-                                {message.model}
+                                {/*{message.model}*/}
+                                GPT
                               </div>
                             )}
 
