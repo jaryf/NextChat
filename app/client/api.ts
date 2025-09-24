@@ -369,7 +369,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     headers["Token"] = params.token
   }
   if(params.deviceID) {
-    headers["Device-ID"] = params.deviceID
+    headers["Device-ID"] = encodeURIComponent(params.deviceID)
   }
   if(params.deviceSystem) {
     headers["Device-System"] = params.deviceSystem
