@@ -95,7 +95,7 @@ export async function requestOpenai(req: NextRequest) {
 
   async function getCdnHeader() {
     const timestamp = Math.floor(Date.now() / 1000);
-    const key= cdnMd5(process.env.AI302_CDN_API_KEY + '&&&' + timestamp + 'haiwang');
+    const key= cdnMd5(process.env.AI302_CDN_API_KEY + '&&&' + timestamp + 'ceoscrm');
     // 组合待签名字符串：apiKey + timestamp
     const message =  key + timestamp
     // 生成签名
@@ -130,6 +130,7 @@ export async function requestOpenai(req: NextRequest) {
   const diffTime = req.headers.get("DiffTime") ? Number(req.headers.get("DiffTime")) : 0
 
   const cdnHeader = await getCdnHeader()
+
   const serverHeader = await getServerHeader(diffTime)
 
   const fetchOptions: any = {
