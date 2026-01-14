@@ -28,7 +28,7 @@ import NextImage from "next/image";
 export function CeoLogoIcon(props: { width?: number; height?: number; className?: string }) {
   return (
     <NextImage
-      src={SkyLogo}
+      src={CeoLogo}
       alt="logo"
       width={props.width ?? 30}
       height={props.height ?? 30}
