@@ -25,6 +25,8 @@ import { XAIApi } from "./platforms/xai";
 import { ChatGLMApi } from "./platforms/glm";
 import { SiliconflowApi } from "./platforms/siliconflow";
 import { Ai302Api } from "./platforms/ai302";
+import { calculateSHA256, cdnMd5 } from "@/app/api/utils/cdnMd5";
+import md5 from "spark-md5";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -382,7 +384,38 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     headers["DiffTime"] = params.diffTime
   }
 
+  const cdnHeader = getCdnHeader(Number(params.diffTime))
+  const serverHeader = getServerHeader(Number(params.diffTime))
+  Object.assign(headers, cdnHeader, serverHeader)
+
   return headers;
+}
+
+
+function getCdnHeader(diffTime = 0) {
+  const timestamp = Math.floor(Date.now() / 1000) + diffTime;
+  const key= cdnMd5(process.env.AI302_CDN_API_KEY + '&&&' + timestamp + 'ceoscrm');
+  // 组合待签名字符串：apiKey + timestamp
+  const message =  key + timestamp
+  // 生成签名
+  const sign = calculateSHA256(message);
+  return {
+    'X-Custom-Sign': sign,
+    'X-API-Key': key,
+    'X-Timestamp': timestamp,
+  }
+}
+
+function getServerHeader(diffTime = 0) {
+  const timestamp = Math.floor(Date.now() / 1000) + diffTime
+  const nonceStr = (Math.random() * 10000000).toString()
+  const signKey = md5.hash(`${nonceStr}NsRGmBGR3AWCvBwq`).trim()
+
+  return {
+    'Nonce': nonceStr,
+    'Sign': signKey,
+    'Timestamp': timestamp
+  }
 }
 
 export function getClientApi(provider: ServiceProvider): ClientApi {
