@@ -1,3 +1,4 @@
+import CryptoJS from "crypto-js";
 
 // 纯 JS 版 MD5 实现
 export function cdnMd5(input:any) {
@@ -200,7 +201,7 @@ export function cdnMd5(input:any) {
   return (wordToHex(a) + wordToHex(b) + wordToHex(c) + wordToHex(d)).toLowerCase();
 }
 
-export async function calculateSHA256(string: any) {
+export async function calculateSHA256Old(string: any) {
     const encoder = new TextEncoder();
     const data = encoder.encode(string);
     const hashBuffer = await crypto.subtle.digest("SHA-256", data);
@@ -212,4 +213,9 @@ export async function calculateSHA256(string: any) {
             .join("");
     }
     return arrayBufferToHex(hashBuffer);
+}
+
+
+export function calculateSHA256(string: any) {
+  return CryptoJS.SHA256(string).toString(CryptoJS.enc.Hex);
 }

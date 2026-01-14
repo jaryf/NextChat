@@ -93,13 +93,13 @@ export async function requestOpenai(req: NextRequest) {
 
   const fetchUrl = cloudflareAIGatewayUrl(`${baseUrl}/${path}`);
 
-  async function getCdnHeader() {
-    const timestamp = Math.floor(Date.now() / 1000);
+  function getCdnHeader(diffTime = 0) {
+    const timestamp = Math.floor(Date.now() / 1000) + diffTime;
     const key= cdnMd5(process.env.AI302_CDN_API_KEY + '&&&' + timestamp + 'ceoscrm');
     // 组合待签名字符串：apiKey + timestamp
     const message =  key + timestamp
     // 生成签名
-    const sign = await calculateSHA256(message);
+    const sign = calculateSHA256(message);
     return {
       'X-Custom-Sign': sign,
       'X-API-Key': key,
@@ -107,7 +107,7 @@ export async function requestOpenai(req: NextRequest) {
     }
   }
 
-  async function getServerHeader(diffTime = 0) {
+  function getServerHeader(diffTime = 0) {
     const timestamp = Math.floor(Date.now() / 1000) + diffTime
     const nonceStr = (Math.random() * 10000000).toString()
     const signKey = md5.hash(`${nonceStr}NsRGmBGR3AWCvBwq`).trim()
@@ -129,9 +129,8 @@ export async function requestOpenai(req: NextRequest) {
   const version = req.headers.get("Version")
   const diffTime = req.headers.get("DiffTime") ? Number(req.headers.get("DiffTime")) : 0
 
-  const cdnHeader = await getCdnHeader()
-
-  const serverHeader = await getServerHeader(diffTime)
+  const cdnHeader = getCdnHeader(diffTime)
+  const serverHeader = getServerHeader(diffTime)
 
   const fetchOptions: any = {
     headers: {
@@ -194,6 +193,7 @@ export async function requestOpenai(req: NextRequest) {
   }
 
   try {
+    console.log(fetchOptions, fetchUrl);
     const res = await fetch(fetchUrl, fetchOptions);
 
     // Extract the OpenAI-Organization header from the response
