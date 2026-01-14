@@ -22,7 +22,7 @@ import BotIconHunyuan from "../icons/llm-icons/hunyuan.svg";
 import BotIconDoubao from "../icons/llm-icons/doubao.svg";
 import BotIconChatglm from "../icons/llm-icons/chatglm.svg";
 import CeoLogo from "../icons/ceo_logo.png";
-import SkyLogo from "../icons/sky-logo.png.png";
+import SkyLogo from "../icons/sky-logo.png";
 import NextImage from "next/image";
 
 export function CeoLogoIcon(props: { width?: number; height?: number; className?: string }) {
