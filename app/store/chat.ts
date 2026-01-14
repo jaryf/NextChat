@@ -473,7 +473,6 @@ export const useChatStore = createPersistStore(
           },
           async onFinish(message) {
             botMessage.streaming = false;
-            console.log(message);
             if (message) {
               botMessage.content = message;
               botMessage.date = new Date().toLocaleString();
