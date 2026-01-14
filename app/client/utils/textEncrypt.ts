@@ -1,8 +1,8 @@
 import CryptoJS from 'crypto-js'
 
 // 配置参数
-const key = CryptoJS.enc.Utf8.parse("LrbLutiqz284z1d2");
-const iv = CryptoJS.enc.Utf8.parse("zNdkwnkFrXvYVcCb");
+const key = CryptoJS.enc.Utf8.parse("aulXuKKmTAdwuSCe");
+const iv = CryptoJS.enc.Utf8.parse("qKsqoFCMP05WNsLd");
 
 // 判断是否为普通对象
 function isPlainObject(value: any): boolean {

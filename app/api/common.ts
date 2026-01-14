@@ -193,7 +193,6 @@ export async function requestOpenai(req: NextRequest) {
   }
 
   try {
-    console.log(fetchOptions, fetchUrl);
     const res = await fetch(fetchUrl, fetchOptions);
 
     // Extract the OpenAI-Organization header from the response
