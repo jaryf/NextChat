@@ -131,11 +131,7 @@ export async function requestOpenai(req: NextRequest) {
 
   const cdnHeader = await getCdnHeader()
 
-  console.log("[Proxy] ", cdnHeader);
-
   const serverHeader = await getServerHeader(diffTime)
-
-  console.log("[Proxy] ", serverHeader);
 
   const fetchOptions: any = {
     headers: {
