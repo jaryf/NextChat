@@ -378,6 +378,10 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     headers["Version"] = params.version
   }
 
+  if(params.diffTime) {
+    headers["DiffTime"] = params.diffTime
+  }
+
   return headers;
 }
 

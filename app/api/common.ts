@@ -106,9 +106,19 @@ export async function requestOpenai(req: NextRequest) {
       'X-Timestamp': timestamp,
     }
   }
-  const cdnHeader = await getCdnHeader()
-  const nonce = (Math.random() * 10000000).toString()
-  const sign = md5.hash(`${nonce}NsRGmBGR3AWCvBwq`).trim()
+
+  async function getServerHeader(diffTime = 0) {
+    const timestamp = Math.floor(Date.now() / 1000) + diffTime
+    const nonceStr = (Math.random() * 10000000).toString()
+    const signKey = md5.hash(`${nonceStr}NsRGmBGR3AWCvBwq`).trim()
+
+    return {
+      'Nonce': nonceStr,
+      'Sign': signKey,
+      'Timestamp': timestamp
+    }
+  }
+
   const token = req.headers
     .get("Token")
     ?.trim()
@@ -117,12 +127,15 @@ export async function requestOpenai(req: NextRequest) {
   const deviceID = req.headers.get("Device-ID")
   const deviceSystem = req.headers.get("Device-System")
   const version = req.headers.get("Version")
+  const diffTime = req.headers.get("DiffTime")
+
+  const cdnHeader = await getCdnHeader()
+  const serverHeader = await getServerHeader(diffTime)
+
   const fetchOptions: any = {
     headers: {
       "Content-Type": "application/json",
       "Cache-Control": "no-store",
-      "Nonce": nonce,
-      "Sign": sign,
       "Device-ID": deviceID,
       "Device-System": deviceSystem,
       "Version": version,
@@ -132,7 +145,8 @@ export async function requestOpenai(req: NextRequest) {
       ...(serverConfig.openaiOrgId && {
         "OpenAI-Organization": serverConfig.openaiOrgId,
       }),
-      ...cdnHeader
+      ...cdnHeader,
+      ...serverHeader
     },
     method: req.method,
     body: req.body,
