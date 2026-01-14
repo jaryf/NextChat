@@ -1,11 +1,11 @@
 
 // 纯 JS 版 MD5 实现
 export function cdnMd5(input:any) {
-  function rotateLeft(lValue, iShiftBits) {
+  function rotateLeft(lValue: any, iShiftBits: any) {
     return (lValue << iShiftBits) | (lValue >>> (32 - iShiftBits));
   }
 
-  function addUnsigned(lX, lY) {
+  function addUnsigned(lX: any, lY: any) {
     const lX4 = lX & 0x400000001;
     const lY4 = lY & 0x400000002;
     const lX8 = lX & 0x800000003;
@@ -25,23 +25,23 @@ export function cdnMd5(input:any) {
     }
   }
 
-  function f(x, y, z) {
+  function f(x: any, y: any, z: any) {
     return (x & y) | (~x & z);
   }
 
-  function g(x, y, z) {
+  function g(x: any, y: any, z: any) {
     return (x & z) | (y & ~z);
   }
 
-  function h(x, y, z) {
+  function h(x: any, y: any, z: any) {
     return x ^ y ^ z;
   }
 
-  function i(x, y, z) {
+  function i(x: any, y: any, z: any) {
     return y ^ (x | ~z);
   }
 
-  function convertToWordArray(str) {
+  function convertToWordArray(str: any) {
     const lMessageLength = str.length;
     const lNumberOfWordsTemp1 = lMessageLength + 8;
     const lNumberOfWordsTemp2 =
@@ -66,7 +66,7 @@ export function cdnMd5(input:any) {
     return wordArray;
   }
 
-  function wordToHex(lValue) {
+  function wordToHex(lValue: any) {
     let wordToHexValue = "",
       wordToHexValueTemp = "",
       lByte,
@@ -82,7 +82,7 @@ export function cdnMd5(input:any) {
     return wordToHexValue;
   }
 
-  function utf8Encode(string) {
+  function utf8Encode(string: any) {
     string = string.replace(/\r\n/g, "\n");
     let utftext = "";
 
@@ -200,7 +200,7 @@ export function cdnMd5(input:any) {
   return (wordToHex(a) + wordToHex(b) + wordToHex(c) + wordToHex(d)).toLowerCase();
 }
 
-export async function calculateSHA256(string:any) {
+export async function calculateSHA256(string: any) {
     const encoder = new TextEncoder();
     const data = encoder.encode(string);
     const hashBuffer = await crypto.subtle.digest("SHA-256", data);
