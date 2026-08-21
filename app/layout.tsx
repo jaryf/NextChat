@@ -9,10 +9,10 @@ import { GoogleTagManager, GoogleAnalytics } from "@next/third-parties/google";
 import { getServerSideConfig } from "./config/server";
 
 export const metadata: Metadata = {
-  title: "CEO SCRM AI 平台",
+  title: "SKY SCRM AI 平台",
   description: "Your personal ChatGPT Chat Bot.",
   appleWebApp: {
-    title: "CEO SCRM AI 平台",
+    title: "SKY SCRM AI 平台",
     statusBarStyle: "default",
   },
 };

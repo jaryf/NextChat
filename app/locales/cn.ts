@@ -19,7 +19,7 @@ const cn = {
     Later: "稍后再说",
     SaasTips: "配置太麻烦，想要立即使用",
     TopTips:
-      "CEO SCRM 聚合翻译客服系统 消除语言屏障，追踪全球商机",
+      "SKY SCRM 聚合翻译客服系统 消除语言屏障，追踪全球商机",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
@@ -304,10 +304,10 @@ const cn = {
 
     Access: {
       SaasStart: {
-        Title: "使用 CEO SCRM AI",
+        Title: "使用 SKY SCRM AI",
         Label: "（性价比最高的方案）",
         SubTitle:
-          "由 CEO 官方维护, 零配置开箱即用",
+          "由 SKY 官方维护, 零配置开箱即用",
         ChatNow: "立刻对话",
       },
       AccessCode: {
